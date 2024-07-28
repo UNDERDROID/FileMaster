@@ -2,45 +2,67 @@ import os
 import shutil
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from tkinter import font
 
-def create_folders(path, folder_names):
-    for folder in folder_names:
+def get_selected_items():
+    selected_items = [option for option, var in zip(options, variables) if var.get()]
+    messagebox.showinfo("Select the folders you want to create","\n".join(selected_items))
+
+def create_folders(path, selected_folders):
+    for folder in selected_folders:
         folder_path = os.path.join(path, folder)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
             print(f"{folder} folder created")
 
-def move_files(path, files, folder_names):
+def move_files(path, files, selected_folders):
     for file in files:
-        if file.endswith(('.jpg', '.png', '.jpeg')) and not os.path.exists(os.path.join(path, 'Images', file)):
+        if 'Images' in selected_folders and file.endswith(('.jpg', '.png', '.jpeg')) and not os.path.exists(os.path.join(path, 'Images', file)):
             shutil.move(os.path.join(path, file), os.path.join(path, 'Images', file))
             print(f"{file} was moved to Images folder")
-        elif file.endswith('.zip') and not os.path.exists(os.path.join(path, 'Compressed', file)):
+        elif 'Compressed' in selected_folders and file.endswith('.zip') and not os.path.exists(os.path.join(path, 'Compressed', file)):
             shutil.move(os.path.join(path, file), os.path.join(path, 'Compressed', file))
             print(f"{file} was moved to Compressed folder")
         else:
             print(f"No matching folder for {file}")
 
 def organize_files():
-    folder_names = ['Images', 'Compressed', 'Video']
+    selected_folders = [option for option, var in zip(options, variables) if var.get()]
     path = filedialog.askdirectory()
     
     if not path:
         messagebox.showwarning("No Folder Selected", "Please select a folder.")
         return
     
+    
+    print(selected_folders)
+
     files = os.listdir(path)
-    create_folders(path, folder_names)
-    move_files(path, files, folder_names)
+    create_folders(path, selected_folders)
+    move_files(path, files, selected_folders)
     messagebox.showinfo("Task Completed", "Files have been organized successfully.")
 
 # Create the main window
 root = tk.Tk()
-root.title("File Organizer")
+root.title("File Master")
+
+heading_font = font.Font(family='Helvetica', size=16, weight='bold')
+heading_label = tk.Label(root, text="Select the files you want to organize", font=heading_font)
+heading_label.pack(pady=10)
+
+options = ['Images', 'Compressed', 'Video']
+variables = []
+
+for option in options:
+    var = tk.BooleanVar()
+    chk = tk.Checkbutton(root, text=option, variable=var)
+    chk.pack(anchor=tk.W)
+    variables.append(var)
 
 # Create and place the button
-organize_button = tk.Button(root, text="Select Folder and Organize Files", command=organize_files)
+organize_button = tk.Button(root, text="Organize", command=organize_files)
 organize_button.pack(pady=50)
+
 
 # Run the application
 root.mainloop()
