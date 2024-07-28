@@ -3,23 +3,27 @@ import shutil
 import tkinter as tk
 from tkinter import filedialog, messagebox, font
 
+# Function to show message in GUI status widget
 def show_operations(message):
     status_text.insert(tk.END, message + '\n')
     status_text.see(tk.END)
     root.update_idletasks
 
+# Function to get options selected by the user in the check box 
 def get_selected_items():
     selected_items = [option for option, var in zip(options, variables) if var.get()]
     messagebox.showinfo("Select the folders you want to create","\n".join(selected_items))
 
+# Function to create folders selected by the user
 def create_folders(path, selected_folders):
     for folder in selected_folders:
         folder_path = os.path.join(path, folder)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-            show_operations(f"{folder} folder created")
-            print(f"{folder} folder created")
+            show_operations(f"{folder} folder created") #prints the message in GUI
+            print(f"{folder} folder created") #prints the message in terminal
 
+# Function to move files in the created folder
 def move_files(path, files, selected_folders):
     for file in files:
         if 'Images' in selected_folders and file.endswith(('.jpg', '.png', '.jpeg')) and not os.path.exists(os.path.join(path, 'Images', file)):
@@ -36,6 +40,7 @@ def move_files(path, files, selected_folders):
             show_operations(f"No matching folder for {file}")
             print(f"No matching folder for {file}")
 
+# Function to select the path directory and organize the files by calling create_folders() & move_files()
 def organize_files():
     selected_folders = [option for option, var in zip(options, variables) if var.get()]
     path = filedialog.askdirectory()
@@ -43,19 +48,17 @@ def organize_files():
     if not path:
         messagebox.showwarning("No Folder Selected", "Please select a folder.")
         return
-    
-    
-    print(selected_folders)
 
     files = os.listdir(path)
     create_folders(path, selected_folders)
     move_files(path, files, selected_folders)
     messagebox.showinfo("Task Completed", "Files have been organized successfully.")
 
-# Create the main window
+# Create the main window for GUI
 root = tk.Tk()
 root.title("File Master")
 
+# Display Heading
 heading_font = font.Font(family='Helvetica', size=16, weight='bold')
 heading_label = tk.Label(root, text="Select the files you want to organize", font=heading_font)
 heading_label.pack(pady=10)
