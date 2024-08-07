@@ -26,16 +26,31 @@ def create_folders(path, selected_folders):
 # Function to move files in the created folder
 def move_files(path, files, selected_folders):
     for file in files:
-        if 'Images' in selected_folders and file.endswith(('.jpg', '.png', '.jpeg')) and not os.path.exists(os.path.join(path, 'Images', file)):
+        if 'Images' in selected_folders and file.endswith(('.jpg', '.png', '.jpeg', '.jfif', '.gif')) and not os.path.exists(os.path.join(path, 'Images', file)):
             shutil.move(os.path.join(path, file), os.path.join(path, 'Images', file))
             show_operations(f"•{file} was moved to Images folder")
             print(f"{file} was moved to Images folder")
 
-        elif 'Compressed' in selected_folders and file.endswith('.zip') and not os.path.exists(os.path.join(path, 'Compressed', file)):
+        elif 'Compressed' in selected_folders and file.endswith(('.zip', '.rar')) and not os.path.exists(os.path.join(path, 'Compressed', file)):
             shutil.move(os.path.join(path, file), os.path.join(path, 'Compressed', file))
             show_operations(f"•{file} was moved to compressed folder")
             print(f"{file} was moved to Compressed folder")
-        
+
+        elif 'Setup' in selected_folders and file.endswith('.exe') and not os.path.exists(os.path.join(path, 'Setup', file)):
+            shutil.move(os.path.join(path, file), os.path.join(path, 'Setup', file))
+            show_operations(f"•{file} was moved to setup folder")
+            print(f"{file} was moved to Setup folder")
+
+        elif 'Videos' in selected_folders and file.endswith(('.mp4', '.mkv')) and not os.path.exists(os.path.join(path, 'Video', file)):
+            shutil.move(os.path.join(path, file), os.path.join(path, 'Video', file))
+            show_operations(f"•{file} was moved to Videos folder")
+            print(f"{file} was moved to Videos folder")
+
+        elif 'Documents' in selected_folders and file.endswith(('.pdf', '.docx', '.txt')) and not os.path.exists(os.path.join(path, 'Documents', file)):
+            shutil.move(os.path.join(path, file), os.path.join(path, 'Documents', file))
+            show_operations(f"•{file} was moved to Documents folder")
+            print(f"{file} was moved to Documents folder")
+
         else:
             show_operations(f"•No matching folder for {file}")
             print(f"No matching folder for {file}")
@@ -66,7 +81,7 @@ heading_font = font.Font(family='Helvetica', size=16, weight='bold')
 heading_label = tk.Label(root, text="Select the files you want to organize", font=heading_font, bg='#1c1c1c', fg='white')
 heading_label.pack(pady=10)
 
-options = ['Images', 'Compressed', 'Video']
+options = ['Images', 'Compressed', 'Videos', 'Setup', 'Documents']
 variables = []
 
 for option in options:
